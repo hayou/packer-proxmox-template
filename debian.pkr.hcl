@@ -13,7 +13,7 @@ variable "iso_file" {
 
 variable "cloudinit_storage_pool" {
   type    = string
-  default = "local-lvm"
+  default = "local"
 }
 
 variable "cores" {
@@ -23,17 +23,17 @@ variable "cores" {
 
 variable "disk_format" {
   type    = string
-  default = "raw"
+  default = "qcow2"
 }
 
 variable "disk_size" {
   type    = string
-  default = "20G"
+  default = "8G"
 }
 
 variable "disk_storage_pool" {
   type    = string
-  default = "local-lvm"
+  default = "local"
 }
 
 variable "cpu_type" {
@@ -82,10 +82,11 @@ source "proxmox-iso" "debian" {
   template_description = "Built from ${basename(var.iso_file)} on ${formatdate("YYYY-MM-DD hh:mm:ss ZZZ", timestamp())}"
   node                 = var.proxmox_node
   network_adapters {
-    bridge   = "vmbr0"
+    bridge   = "vmbr1"
     firewall = true
     model    = "virtio"
     vlan_tag = var.network_vlan
+    firewall    = false
   }
   disks {
     disk_size    = var.disk_size
@@ -99,7 +100,7 @@ source "proxmox-iso" "debian" {
   iso_file       = var.iso_file
   http_directory = "./"
   boot_wait      = "10s"
-  boot_command   = ["<esc><wait>auto url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg<enter>"]
+  boot_command   = ["<esc><wait>auto url=https://raw.githubusercontent.com/hayou/packer-proxmox-template/master/preseed.cfg<enter>"]
   unmount_iso    = true
 
   cloud_init              = true
