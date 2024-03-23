@@ -83,10 +83,9 @@ source "proxmox-iso" "debian" {
   node                 = var.proxmox_node
   network_adapters {
     bridge   = "vmbr1"
-    firewall = true
+    firewall = false
     model    = "virtio"
     vlan_tag = var.network_vlan
-    firewall    = false
   }
   disks {
     disk_size    = var.disk_size
